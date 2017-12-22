@@ -1,4 +1,4 @@
-#include <akeru.h>
+#include "akeru.h"
 
 #define DISTANCE_SENSOR_TRIG_PIN 2 // Le pin du capteur qui envoie l'ultrason
 #define DISTANCE_SENSOR_ECHO_PIN 3 // Le pin du capteur qui reçoit l'impulsion
@@ -17,7 +17,7 @@ void setup() {
   // On setup nos PIN en entrée/sorite
   pinMode(DISTANCE_SENSOR_TRIG_PIN,OUTPUT);
   pinMode(DISTANCE_SENSOR_ECHO_PIN,INPUT);
-  pinMode(LIQUID_PRESENCE_SENSOR_DATA, INPUT);
+  pinMode(LIQUID_PRESENCE_SENSOR_DATA_PIN, INPUT);
 
   // Initialisation du modem Sigfox
   akeru.begin();
@@ -28,8 +28,8 @@ void setup() {
 }
 
 void loop() {
-  unsigned uint8_t distance = getDistance();
-  unsigned uint8_t liquidPresence = getLiquidPresence();
+  uint8_t distance = getDistance();
+  uint8_t liquidPresence = getLiquidPresence();
 
   Serial.print("Distance des gobelets: ");
   Serial.println(distance, DEC);
