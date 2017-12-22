@@ -1,9 +1,4 @@
-/* Ultrasonic Ranging
- Library for HC-SR04 Ultrasonic Ranging Module.librar
- created 2011
- by Robi.Wang
- www.Elecfreak.com
- */
+#include <akeru.h>
 
 #define DISTANCE_SENSOR_TRIG_PIN 2 // Le pin du capteur qui envoie l'ultrason
 #define DISTANCE_SENSOR_ECHO_PIN 3 // Le pin du capteur qui reçoit l'impulsion
@@ -14,30 +9,50 @@
 #define CM 1      //Centimeter
 #define INC 0     //Inch
 
-void setup(){
+
+Akeru akeru(SIGFOX_TX, SIGFOX_RX);
+uint8_t sigfoxMessage[12];
+
+void setup() {
+  // On setup nos PIN en entrée/sorite
   pinMode(DISTANCE_SENSOR_TRIG_PIN,OUTPUT);
   pinMode(DISTANCE_SENSOR_ECHO_PIN,INPUT);
   pinMode(LIQUID_PRESENCE_SENSOR_DATA, INPUT);
 
+  // Initialisation du modem Sigfox
+  akeru.begin();
+  memset(sigfoxMessage, 0, 12);
+
   Serial.begin(9600);      // init serial 9600
-  Serial.println("---------------Fontaine à eau connectée----------------");
+  Serial.println("---------------Intell'eau----------------");
 }
 
-void loop(){
-  long distance = getDistance();
+void loop() {
+  unsigned uint8_t distance = getDistance();
+  unsigned uint8_t liquidPresence = getLiquidPresence();
+
   Serial.print("Distance des gobelets: ");
   Serial.println(distance, DEC);
   Serial.print("Présence d'eau ? ");
+  if ( liquidPresence == 1 ) {
+    Serial.print("Oui");
+  } else {
+    Serial.print("Non");
+  }
+
+  sigfoxMessage[0] = distance;
+  sigfoxMessage[1] = liquidPresence;
 
   delay(3000);
 }
 
-long getDistance() {
-  long acc = 0;
+// getDistance renvoie la distance mesurée par le capteur à ultrasons sur une moyenne de 50 émissions
+uint8_t getDistance() {
+  double acc = 0;
 
   for ( int i = 0 ; i < 50 ; i++ ) {
-    long microseconds = TP_init();
-    long distance_cm = Distance(microseconds, CM);
+    long microseconds = getDistanceFromSensor(); // Ici, dans microseconds on stocke la durée qu'a mis le signal à nous revenir
+    long distance_cm = computeDistance(microseconds, CM); // A partir de cette durée on calcule la distance
 
     acc += distance_cm;
     delay(1);
@@ -46,11 +61,10 @@ long getDistance() {
   return acc / 50;
 }
 
-long Distance(long time, int flag)
-{
-  long distance;
+long computeDistance(long time, int flag) {
+  uint8_t distance;
   if(flag)
-    distance = time /29 / 2  ;     // Distance_CM  = ((Duration of high level)*(Sonic :340m/s))/2
+    distance = time / 29.4 / 2  ;  // Distance_CM  = ((Duration of high level)*(Sonic :340m/s))/2
                                    //              = ((Duration of high level)*(Sonic :0.034 cm/us))/2
                                    //              = ((Duration of high level)/(Sonic :29.4 cm/us))/2
   else
@@ -58,12 +72,27 @@ long Distance(long time, int flag)
   return distance;
 }
 
-long TP_init() {
+long getDistanceFromSensor() { // Fonction 100% pompée sur le net qui calcule la distance en fonction du temps de réception de l'onde
   digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);
   delayMicroseconds(2);
-  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, HIGH);                 // pull the Trig pin to high level for more than 10us impulse
+  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, HIGH);                   // On envoie une vague d'ultrasons
   delayMicroseconds(10);
-  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);
-  long microseconds = pulseIn(DISTANCE_SENSOR_ECHO_PIN, HIGH);   // waits for the pin to go HIGH, and returns the length of the pulse in microseconds
-  return microseconds;                    // return microseconds
+  digitalWrite(DISTANCE_SENSOR_TRIG_PIN, LOW);                    // On coupe l'émission des ultrasons
+  long microseconds = pulseIn(DISTANCE_SENSOR_ECHO_PIN, HIGH);    // On attend de recevoir un signal sur le micro, la fonction nous renvoie sa durée d'attente dans un long
+
+  return microseconds;
+}
+
+uint8_t getLiquidPresence() {
+  uint8_t level = digitalRead(LIQUID_PRESENCE_SENSOR_DATA_PIN);
+
+  return level;
+}
+
+void sendData() {
+  // On envoie le message dans notre backend Sigfox et on reset tous les octets dans sigfoxMessage
+  String msg = akeru.toHex(sigfoxMessage, 12);
+
+  akeru.sendPayload(msg);
+  memset(sigfoxMessage, 0, 12);
 }
