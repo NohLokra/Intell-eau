@@ -18,7 +18,7 @@
  *   - Data conversion in hexadecimal
  */
 
-#include "Akeru.h"
+#include "akeru.h"
 
 Akeru::Akeru(unsigned int rx, unsigned int tx)
 {
