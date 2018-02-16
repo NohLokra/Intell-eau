@@ -1,18 +1,19 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+
+import { HttpClient, HttpClientModule, HttpParams, HttpRequest, HttpHeaders } from '@angular/common/http';
 
 @Injectable()
 export class ApiService {
-  port: number = 9000;
-  host: String = "localhost";
-  protocol: String = "http";
-  basePath: String = "/api";
-  baseUrl: String = this.protocol + "://" + this.host + ":" + this.port + this.basePath;
+    port: number = 9000;
+    host: String = "localhost";
+    protocol: String = "http";
+    basePath: String = "/api";
+    baseUrl: String = this.protocol + "://" + this.host + ":" + this.port + this.basePath;
 
-  constructor() { }
-    _request<T>(verb, endpoint, options, headers): Observable<T> {
+    constructor(private _http: HttpClient) { }
 
-        let request = new HttpRequest();
-
+    request<T>(verb, endpoint, options, headers): Observable<T> {
         let params = new HttpParams();
         for ( let i in options ) {
             let option = i;
@@ -21,26 +22,17 @@ export class ApiService {
             params = params.set(option, value);
         }
 
-        request = request.clone({
-          params: params
-        });
-
-        let headers = new HttpHeaders();
+        let resultHeaders = new HttpHeaders();
         for ( let i in headers ) {
           let header = i;
           let value = headers[i];
 
-          headers = headers.set(header, value);
+          resultHeaders = resultHeaders.set(header, value);
         }
 
-
-        request = request.clone({
-          headers: headers
-        });
-
         return this._http.request<T>(verb, this.baseUrl + endpoint, {
-            params: params,
-            headers: headers
+          params: params,
+          headers: resultHeaders
         });
     }
 }

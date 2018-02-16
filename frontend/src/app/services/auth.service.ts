@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthResult } from '../models/AuthResult';
+import { ApiService } from './api.service';
+import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class AuthService {
@@ -7,13 +9,15 @@ export class AuthService {
 
     constructor(private _api: ApiService) { }
 
-    auth(username, password): AuthResult {
+    auth(username, password): Observable<AuthResult> {
       let headers = {
         "Authorization": "Basic " + btoa(username + ":" + password)
       };
 
-      this._api.request("POST", "auth", {
-        master_key: "//TODO"
-      }, headers);
+      let options = {
+          master_key: "//TODO"
+      };
+
+      return this._api.request<AuthResult>("POST", "auth", options, headers);
     }
 }

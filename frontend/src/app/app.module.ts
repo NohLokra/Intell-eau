@@ -16,12 +16,19 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 // Font Awesome module
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { GraphComponent } from './components/graph/graph.component';
+
+// Imports des services
+import { ApiService } from './services/api.service';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomePageComponent,
     NavbarComponent,
+    DashboardComponent,
+    GraphComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,7 +39,9 @@ import { AngularFontAwesomeModule } from 'angular-font-awesome';
     BsDropdownModule.forRoot(),
     AngularFontAwesomeModule
   ],
-  providers: [],
+  providers: [
+    {provide: ApiService, useClass: ApiService}
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
