@@ -8,18 +8,29 @@ import { RoutingModule } from './app.router';
 
 import { AppComponent } from './app.component';
 import { HomePageComponent } from './pages/home/home.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 
+// Modules de ngx-Bootstrap
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+
+// Font Awesome module
+import { AngularFontAwesomeModule } from 'angular-font-awesome';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomePageComponent,
+    NavbarComponent,
   ],
   imports: [
     BrowserModule,
     RoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    CollapseModule.forRoot(),
+    BsDropdownModule.forRoot(),
+    AngularFontAwesomeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
