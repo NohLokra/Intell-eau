@@ -22,6 +22,14 @@ import { GraphComponent } from './components/graph/graph.component';
 // Imports des services
 import { ApiService } from './services/api.service';
 
+// Import des FakeServices
+import { FakeGobletsStockService } from './services/fake-goblets-stock.service';
+import { FakeWaterLevelService } from './services/fake-water-level.service';
+import { FakeWaterPresenceService } from './services/fake-water-presence.service';
+import { GobletsStockService } from './services/goblets-stock.service';
+import { WaterLevelService } from './services/water-level.service';
+import { WaterPresenceService } from './services/water-presence.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -40,7 +48,10 @@ import { ApiService } from './services/api.service';
     AngularFontAwesomeModule
   ],
   providers: [
-    {provide: ApiService, useClass: ApiService}
+    {provide: ApiService, useClass: ApiService},
+    {provide: GobletsStockService, useClass: FakeGobletsStockService},
+    {provide: WaterLevelService, useClass: FakeWaterLevelService},
+    {provide: WaterPresenceService, useClass: FakeWaterPresenceService},
   ],
   bootstrap: [AppComponent]
 })
