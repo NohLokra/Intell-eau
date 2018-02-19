@@ -7,8 +7,6 @@ import { GobletsStockServiceInterface } from './goblets-stock-service-interface'
 @Injectable()
 export class FakeGobletsStockService implements GobletsStockServiceInterface {
 
-  constructor() { }
-
   getGobletsStocks(): Observable<Array<GobletsStock>> {
     let gobletsStock: Array<GobletsStock> = [
       {
@@ -40,7 +38,13 @@ export class FakeGobletsStockService implements GobletsStockServiceInterface {
     return new Observable(sub => {
         sub.next(gobletsStock);
         sub.complete();
-    })
+    });
+  }
+
+  getNextShortage(): Observable<Date> {
+      return new Observable(sub => {
+          sub.next(new Date("02/02/2018 21:00:00"));
+      });
   }
 
 }

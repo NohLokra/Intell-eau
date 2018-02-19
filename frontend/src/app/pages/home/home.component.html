@@ -1,3 +1,10 @@
-<p>
-  home works!
-</p>
+<h1 class="pt-4">Tableau de bord</h1>
+<hr/>
+<div class="row">
+    <div class="col-4">
+        <app-graph [dataset]="gobletsStocks" [label]="gobletsStockGraphLabel" [nextShortage]="gobletsNextShortage" [changeOnLow]="true"></app-graph>
+    </div>
+    <div class="col-4">
+        <app-graph [dataset]="waterLevels" [label]="waterLevelsGraphLabel" [nextShortage]="waterLevelNextAlert"></app-graph>
+    </div>
+</div>

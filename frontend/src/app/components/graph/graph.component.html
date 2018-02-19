@@ -1,3 +1,19 @@
-<p>
-  graph works!
-</p>
+<div class="card" [attr.data-label]="label">
+    <div class="card-header">
+        {{ label }}
+    </div>
+    <div class="card-body">
+        <canvas #canvas>
+            {{ graph }}
+        </canvas>
+    </div>
+    <div class="card-footer alert-danger">
+        <span *ngIf="changeOnLow">
+            Prochaine pénurie le 
+        </span>
+        <span *ngIf="!changeOnLow">
+            Trop plein le 
+        </span>
+        {{ nextShortage|date:"dd/MM/y à hh:mm a" }}
+    </div>
+</div>
