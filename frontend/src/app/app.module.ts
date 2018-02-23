@@ -7,7 +7,13 @@ import { RoutingModule } from './app.router';
 
 
 import { AppComponent } from './app.component';
+
+// Les pages
 import { HomePageComponent } from './pages/home/home.component';
+import { SettingsPageComponent } from './pages/settings/settings.component';
+
+// Nos components
+import { GraphComponent } from './components/graph/graph.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 
 // Modules de ngx-Bootstrap
@@ -17,7 +23,7 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
 // Font Awesome module
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { GraphComponent } from './components/graph/graph.component';
+
 
 // Imports des services
 import { ApiService } from './services/api.service';
@@ -37,6 +43,7 @@ import { WaterPresenceService } from './services/water-presence.service';
     NavbarComponent,
     DashboardComponent,
     GraphComponent,
+    SettingsPageComponent,
   ],
   imports: [
     BrowserModule,
