@@ -58,17 +58,22 @@ void loop() {
 
 // getDistance renvoie la distance mesurée par le capteur à ultrasons sur une moyenne de 50 émissions
 char getDistance() {
-  Serial.println("Calcul de la distance...");
+  Serial.print("Calcul de la distance: ");
   long acc = 0;
-  int measuresCount = 50;
+  int measuresCount = 10;
 
   for ( int i = 0 ; i < measuresCount ; i++ ) {
     long microseconds = getDistanceFromSensor(); // Ici, dans microseconds on stocke la durée qu'a mis le signal à nous revenir
 
     acc += microseconds;
     delay(1);
-  }
 
+    Serial.print(microseconds);
+    Serial.print(" microsecondes: ");
+    Serial.print((i+1)*100/measuresCount);
+    Serial.println("% ");
+  }
+  
   Serial.println("Distance OK");
   
   long distance_cm = computeDistance(acc/measuresCount, CM); // A partir de cette durée on calcule la distance
